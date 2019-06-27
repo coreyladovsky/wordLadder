@@ -102,21 +102,58 @@ class WordLadder {
   }
 
   findPath(startWord, endWord) {
-    let possilbe = this.isPossilbe(startWord, endWord)
-    if(!!possilbe) {
-      return true;
+    let possible = this.isPossilbe(startWord, endWord)
+    if(!!possible) {
+      return this.weightCalc(possible, startWord, endWord)
     } else {
-      return false;
+      return "Path Not Possible";
     }
+  }
+
+  weightCalc(graph, startWord, endWord) {
+    let start = graph[startWord];
+    start.weight = 0;
+    start.visited = true;
+    let queue = [start];
+    while(queue.length) {
+      let node = queue.shift();
+      node.children.forEach(child => {
+        let possWeight = node.weight + 1
+        if(child.visited) {
+          child.weight = Math.min(possWeight, child.weight)
+        } else {
+          child.visited = true;
+          child.weight = possWeight;
+          queue.push(child)
+        }
+      })
+    }
+    return this.reverseLookUp(graph, startWord, endWord)
+
+  }
+
+  reverseLookUp(graph, startWord, endWord) {
+    let output = [endWord];
+    let currentNode = graph[endWord];
+    while(currentNode.val !== startWord) {
+      currentNode = currentNode.children.reduce((acc, curr) => {
+        if(curr.weight < acc.weight) {
+          acc = curr
+        }
+        return acc;
+      })
+      output.unshift(currentNode.val);s
+    }
+    return output
   }
 
 }
 
-let arr = ["cat", "bat", "bar", "car", "cart", "git", "get", "gin"]
-// let graph = new Graph(3);
+let arr = ["cat", "bat", "bar", "car", "cart", "git", "get", "gin", "card", "cord", "bad", "dad", "did", "dig"]
 let ladder = new WordLadder(arr)
 // console.log(ladder)
-console.log(ladder.findPath("car", "bat"))
+console.log(ladder.findPath("car", "dad"))
+// console.log(ladder.findPath("get", "gin"))
+// console.log(ladder.findPath("car", "gin"))
+// console.log(ladder.findPath("cart", "cord"));
 // console.log("Ladder" , ladder)
-console.log(ladder.findPath("get", "gin"))
-console.log(ladder.findPath("car", "gin"))
