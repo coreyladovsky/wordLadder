@@ -1,3 +1,4 @@
+const fs = require('fs')
 class Node {
   constructor(val) {
     this.val = val;
@@ -36,8 +37,8 @@ class Graph {
     return offCounts === 0 ? false : true
   }
 
-  build(startWord, words) {
-    let wordsToBuild = words.filter(word => word.length === this.wordLength)
+  build(startWord, wordsToBuild) {
+    // let wordsToBuild = words.filter(word => word.length === this.wordLength)
     let startWordNode = new Node(startWord);
     this.includes[startWord] = startWordNode;
     let queue = [startWordNode]
@@ -64,13 +65,25 @@ class Graph {
 
 class WordLadder {
   constructor(dictionary) {
-    this.dictionary = dictionary;
+    this.dictionary = this.setUpDictionary(dictionary);
     this.graphs = {};
+  }
+
+  setUpDictionary(dictionary) {
+    let dict = {};
+    dictionary.forEach(word => {
+      if(dict[word.length]) {
+        dict[word.length].push(word)
+      } else {
+        dict[word.length] = [word]
+      }
+    })
+    return dict;
   }
 
   buildGraph(startWord, endWord) {
     let graph = new Graph(startWord.length);
-    return graph.build(startWord, this.dictionary);
+    return graph.build(startWord, this.dictionary[startWord.length]);
   }
 
 
@@ -78,6 +91,8 @@ class WordLadder {
     if(startWord.length !== endWord.length) {
       return false;
     }
+    if(!this.dictionary[startWord.length].includes(startWord)) return false;
+    if(!this.dictionary[endWord.length].includes(endWord)) return false;
     if(this.graphs[startWord.length]) {
       let graphArr = this.graphs[startWord.length];
       for(let i = 0; i < graphArr.length; i++) {
@@ -142,17 +157,41 @@ class WordLadder {
         }
         return acc;
       })
-      output.unshift(currentNode.val);s
+      output.unshift(currentNode.val);
     }
     return output
   }
 
 }
+// var text = fs.readFileSync("./dictionary.txt").toString('utf-8');
+// var linesArray = text.split("\n")
+// console.log(linesArray);
+document.addEventListener("DOMContentLoaded", () => {
+  const {words} = require("./dict.js")
+  let ladder = new WordLadder(words)
+  let submit = document.querySelector("button");
+  submit.addEventListener("click", () => {
+    let ul = document.querySelector("ul")
+    ul.innerText = null;
+    let inputs = document.querySelectorAll("input")
+    let path = ladder.findPath(inputs[0].value, inputs[1].value)
+    if(path === "Path Not Possible") {
+      ul.innerText(path)
+    } else {
+      path.forEach(word => {
+        let li = document.createElement("li");
+        li.innerText = word;
+        ul.appendChild(li)
+      })
 
-let arr = ["cat", "bat", "bar", "car", "cart", "git", "get", "gin", "card", "cord", "bad", "dad", "did", "dig"]
-let ladder = new WordLadder(arr)
+    }
+  })
+})
+
+// let arr = ["cat", "bat", "bar", "car", "cart", "git", "get", "gin", "card", "cord", "bad", "dad", "did", "dig", "hat", "ham"]
+// let ladder = new WordLadder(arr)
 // console.log(ladder)
-console.log(ladder.findPath("car", "dad"))
+// console.log(ladder.findPath("car", "ham"))
 // console.log(ladder.findPath("get", "gin"))
 // console.log(ladder.findPath("car", "gin"))
 // console.log(ladder.findPath("cart", "cord"));
