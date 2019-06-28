@@ -1,4 +1,3 @@
-const fs = require('fs')
 class Node {
   constructor(val) {
     this.val = val;
@@ -38,7 +37,6 @@ class Graph {
   }
 
   build(startWord, wordsToBuild) {
-    // let wordsToBuild = words.filter(word => word.length === this.wordLength)
     let startWordNode = new Node(startWord);
     this.includes[startWord] = startWordNode;
     let queue = [startWordNode]
@@ -163,9 +161,7 @@ class WordLadder {
   }
 
 }
-// var text = fs.readFileSync("./dictionary.txt").toString('utf-8');
-// var linesArray = text.split("\n")
-// console.log(linesArray);
+
 document.addEventListener("DOMContentLoaded", () => {
   const {words} = require("./dict.js")
   let ladder = new WordLadder(words)
