@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let ladder = new WordLadder(words)
   let submit = document.querySelector("form");
   submit.addEventListener("submit", (e) => {
-    debugger
     e.preventDefault();
     let ul = document.querySelector("ul")
     ul.innerText = "Thinking... Please wait"
