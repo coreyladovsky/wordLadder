@@ -2,15 +2,19 @@ import WordLadder from './lib/wordLadder.js';
 import words from 'an-array-of-english-words';
 
 document.addEventListener("DOMContentLoaded", () => {
+
   let ladder = new WordLadder(words)
   let submit = document.querySelector("form");
   let ul = document.querySelector("ul")
+
   submit.addEventListener("submit", (e) => {
     e.preventDefault();
     ul.innerText = "Thinking... Please wait"
     let inputs = document.querySelectorAll("input")
     let path = "Path Not Possible"
+
     if(inputs[0].value && inputs[0].value) {
+
       setTimeout(function() {
         path = ladder.findPath(inputs[0].value.toLowerCase(), inputs[1].value.toLowerCase())
         ul.innerText = null;
@@ -28,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
           })
         }
       }, 0)
+      
     }
 
   })
