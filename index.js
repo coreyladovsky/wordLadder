@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
           let width = canvas.attr("width");
           let height = canvas.attr("height");
           let radius = 3;
+          // let color = d3.scaleOrdinal(d3.schemeCategory20)
           let ctx = canvas.node().getContext("2d");
 
           let simulation = d3.forceSimulation()
@@ -54,20 +55,39 @@ document.addEventListener("DOMContentLoaded", () => {
           //   node.y = Math.random() * height;
           // })
 
+
+        canvas
+            .call(d3.drag()
+                .container(canvas.node())
+                .subject(dragsubject)
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
           function update() {
             ctx.clearRect(0, 0, width, height);
             ctx.beginPath();
-
+            ctx.globalAlpha = 0.1;
+            ctx.strokeStyle = "#aaa"
             ladder.currGraph.links.forEach(drawLink);
             ctx.stroke();
-            ctx.beginPath();
+            // ctx.beginPath();
             Object.values(ladder.currGraph.graph).forEach(drawNode);
-            ctx.fill();
+            // ctx.fill();
+
+
           }
 
+          function dragsubject() {
+            return simulation.find(d3.event.x, d3.event.y);
+          }
           function drawNode(node) {
+            ctx.beginPath();
+
+            // ctx.fillStyle = color(node.val)
             ctx.moveTo(node.x, node.y);
             ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI)
+            ctx.fill();
           }
 
           function drawLink(link) {
@@ -76,7 +96,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
           }
 
-          update();
+          function dragstarted() {
+            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+            d3.event.subject.fx = d3.event.subject.x;
+            d3.event.subject.fy = d3.event.subject.y;
+          }
+
+          function dragged() {
+            d3.event.subject.fx = d3.event.x;
+            d3.event.subject.fy = d3.event.y;
+          }
+
+          function dragended() {
+            if (!d3.event.active) simulation.alphaTarget(0);
+            d3.event.subject.fx = null;
+            d3.event.subject.fy = null;
+          }
+
+
+          // update();
 
           // let svg = d3.select('body').append('svg')
           //   .attr('width', 800)
