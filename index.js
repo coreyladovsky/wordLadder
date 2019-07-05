@@ -43,9 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
             .force("y", d3.forceY(height / 2))
             .force("collide", d3.forceCollide(radius + 1))
             .force("charge", d3.forceManyBody().strength(-20))
+            .force("link", d3.forceLink().id((d) => d.val))
             .on("tick", update)
 
             simulation.nodes(Object.values(ladder.currGraph.graph))
+            simulation.force("link")
+                .links(ladder.currGraph.links)
           // Object.values(ladder.currGraph.graph).forEach(node => {
           //   node.x = Math.random() * width;
           //   node.y = Math.random() * height;
@@ -54,6 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
           function update() {
             ctx.clearRect(0, 0, width, height);
             ctx.beginPath();
+
+            ladder.currGraph.links.forEach(drawLink);
+            ctx.stroke();
+            ctx.beginPath();
             Object.values(ladder.currGraph.graph).forEach(drawNode);
             ctx.fill();
           }
@@ -61,6 +68,12 @@ document.addEventListener("DOMContentLoaded", () => {
           function drawNode(node) {
             ctx.moveTo(node.x, node.y);
             ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI)
+          }
+
+          function drawLink(link) {
+            ctx.moveTo(link.source.x, link.source.y)
+            ctx.lineTo(link.target.x, link.target.y, radius, 0, 2 * Math.PI)
+
           }
 
           update();
