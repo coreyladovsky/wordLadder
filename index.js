@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
           function update() {
             ctx.clearRect(0, 0, width, height);
             ctx.beginPath();
-            ctx.globalAlpha = 0.1;
+            // ctx.globalAlpha = 0.1;
             ctx.strokeStyle = "#aaa"
             ladder.currGraph.links.forEach(drawLink);
             ctx.stroke();
@@ -78,16 +78,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
           }
 
+          // credit to https://bl.ocks.org/mbostock/ad70335eeef6d167bc36fd3c04378048
+
           function dragsubject() {
             return simulation.find(d3.event.x, d3.event.y);
           }
           function drawNode(node) {
             ctx.beginPath();
 
-            // ctx.fillStyle = color(node.val)
+            ctx.fillStyle = 'green'
             ctx.moveTo(node.x, node.y);
             ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI)
-            ctx.fill();
+            ctx.fill()
+            ctx.beginPath();
+            ctx.fillStyle = "black"
+            ctx.fillText(node.val, node.x - 10, node.y + 10)
           }
 
           function drawLink(link) {
