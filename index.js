@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           Object.values(ladder.currGraph.graph).forEach(node => {
             node.x = Math.random() * width;
-            node.y = Math.random() * y;
+            node.y = Math.random() * height;
           })
 
           function update() {
