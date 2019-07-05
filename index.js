@@ -38,10 +38,18 @@ document.addEventListener("DOMContentLoaded", () => {
           let radius = 3;
           let ctx = canvas.node().getContext("2d");
 
-          Object.values(ladder.currGraph.graph).forEach(node => {
-            node.x = Math.random() * width;
-            node.y = Math.random() * height;
-          })
+          let simulation = d3.forceSimulation()
+            .force("x", d3.forceX(width / 2))
+            .force("y", d3.forceY(height / 2))
+            .force("collide", d3.forceCollide(radius + 1))
+            .force("charge", d3.forceManyBody().strength(-20))
+            .on("tick", update)
+
+            simulation.nodes(Object.values(ladder.currGraph.graph))
+          // Object.values(ladder.currGraph.graph).forEach(node => {
+          //   node.x = Math.random() * width;
+          //   node.y = Math.random() * height;
+          // })
 
           function update() {
             ctx.clearRect(0, 0, width, height);
