@@ -43,3 +43,7 @@ li {
   width: fit-content;
   margin: 7px;
 }
+
+canvas {
+  border: 1px solid black;
+}
